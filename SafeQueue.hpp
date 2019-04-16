@@ -35,11 +35,18 @@ public:
         });
         auto result = queue_.front();
         result->assignWorker();
+
         if (!result->isEnoughWorkers())
         {
-            cv_.notify_one();
-            std::this_thread::sleep_for(std::chrono::seconds(rand() % 2 + 1));
+			return result;
         }
+		else if (result->getOperationType() == Operation::Type::multiplication ||
+			result->getOperationType() == Operation::Type::division)
+		{
+			std::cout << "Try to notify coworker" << std::endl;
+			result->notifyCoworker();
+		}
+
         queue_.pop();
         return result;
     }

@@ -3,6 +3,7 @@
 
 class OperationMachine
 {
+ public:
 	OperationMachine();
 };
 

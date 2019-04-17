@@ -38,6 +38,7 @@ public:
 
         if (!result->isEnoughWorkers())
         {
+            cv_.notify_one();
 			return result;
         }
 		else if (result->getOperationType() == Operation::Type::multiplication ||

@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-Worker::Worker(int nr, std::shared_ptr<ThreadSafeQueue> queue)
+Worker::Worker(int nr, std::shared_ptr<ThreadSafeQueue> queue, std::shared_ptr<OperationMachine> machine)
     : queue_(queue)
     , prefix_("Worker nr" + std::to_string(nr) + ": ")
 {
@@ -22,6 +22,13 @@ void Worker::tryAct()
 		}
 		std::cout << prefix_ << "got new operation " << *operationPtr << std::endl;
 
-		std::this_thread::sleep_for(std::chrono::seconds(rand() % 5 + 2));
+        transportToMachine(operationPtr);
+
 	}
+}
+
+void Worker::transportToMachine(std::shared_ptr<Operation> operation)
+{
+    std::this_thread::sleep_for(std::chrono::seconds(rand() % 5 + 2));
+    std::cout << prefix_ << "Transport of " << *operation << " end" << std::endl;
 }

@@ -39,6 +39,7 @@ struct Operation
         type_ = oper.type_;
         nrOfNeededWorkers_ = oper.nrOfNeededWorkers_;
         nrOfAssignedWorkers_ = oper.nrOfAssignedWorkers_;
+        operNr_ = oper.operNr_;
 		isReady_ = oper.isReady_;
     }
 
@@ -47,13 +48,13 @@ struct Operation
         switch (oper.type_)
         {
             case Operation::Type::addition:
-				return os << std::to_string(oper.operNr_) << " addition";
+                return os << oper.operNr_ << " addition";
             case Operation::Type::substraction:
-                return os << std::to_string(oper.operNr_) << " substraction";
+                return os << oper.operNr_ << " substraction";
             case Operation::Type::multiplication:
-                return os << std::to_string(oper.operNr_) << " multiplication";
+                return os << oper.operNr_ << " multiplication";
             case Operation::Type::division:
-                return os << std::to_string(oper.operNr_) << " division";
+                return os << oper.operNr_ << " division";
         }
         return os << "Operation not known";
     }
@@ -83,7 +84,7 @@ struct Operation
 	void notifyCoworker()
 	{
 		std::lock_guard<std::mutex> lock(mutex_);
-		std::cout << "Notify other worker that operation can be processed" << std::endl;
+        std::cout << "Notify other worker that operation: " << operNr_ << " can be processed" << std::endl;
 		isReady_ = true;
 		cv_.notify_all();
 	}

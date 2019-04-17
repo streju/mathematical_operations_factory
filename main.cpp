@@ -12,6 +12,7 @@
 #include "Worker.hpp"
 #include "SafeQueue.hpp"
 #include "Operation.hpp"
+#include "OperationMachine.hpp"
 
 using namespace std;
 
@@ -27,9 +28,11 @@ int main()
     vector<shared_ptr<Worker>> workers(nrOfWorkers);
 
     auto safeQueue = make_shared<ThreadSafeQueue>();
+    auto operationMachine = make_shared<OperationMachine>();
+
     for (int i=0; i<nrOfWorkers; ++i)
     {
-        shared_ptr<Worker> worker = make_shared<Worker>(i+1, safeQueue);
+        shared_ptr<Worker> worker = make_shared<Worker>(i+1, safeQueue, operationMachine);
         workersThreads.emplace_back(&Worker::tryAct, worker);
         workers.push_back(worker);
     }

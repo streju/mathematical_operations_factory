@@ -4,12 +4,12 @@
 #include <string>
 #include "SafeQueue.hpp"
 #include "Operation.hpp"
-#include "OperationMachine.hpp"
+#include "MachinesService.hpp"
 
 class Worker
 {
 public:
-    Worker(int nr, std::shared_ptr<ThreadSafeQueue> queue, std::shared_ptr<OperationMachine> machine);
+    Worker(int nr, std::shared_ptr<ThreadSafeQueue> queue, std::shared_ptr<MachinesService> machine);
     void tryAct();
 private:
     void transportToMachine(std::shared_ptr<Operation> operation);

@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-Worker::Worker(int nr, std::shared_ptr<ThreadSafeQueue> queue, std::shared_ptr<OperationMachine> machine)
+Worker::Worker(int nr, std::shared_ptr<ThreadSafeQueue> queue, std::shared_ptr<MachinesService> machine)
     : queue_(queue)
     , prefix_("Worker nr" + std::to_string(nr) + ": ")
 {

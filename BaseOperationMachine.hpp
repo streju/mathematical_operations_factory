@@ -3,10 +3,16 @@
 
 class IBaseOperationMachine
 {
-    virtual ~IBaseOperationMachine();
+public:
+    virtual ~IBaseOperationMachine() {}
 
-    virtual isBusy() = 0;
-    virtual calculate() = 0;
+    bool isBusy()
+    {
+        return isCalculationOngoing_;
+    }
+    virtual void calculate() = 0;
+
+	bool isCalculationOngoing_{ false };
 };
 
 #endif // BASEOPERATIONMACHINE_HPP

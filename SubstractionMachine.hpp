@@ -7,7 +7,6 @@ class SubstractionMachine :
 {
 public:
 	SubstractionMachine();
-	bool isBusy() override;
 	void calculate() override;
 };
 

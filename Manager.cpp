@@ -41,7 +41,7 @@ std::optional<Operation> Manager::translateToOperation(int operationTypeNr)
     {
         case 0:
             std::cout << operationNr_ << ": addition" <<std::endl;
-            return Operation{Operation::Type::addition, operationNr_};
+            return Operation(Operation::Type::addition, operationNr_);
         case 1:
             std::cout << operationNr_ << ": substraction" <<std::endl;
             return Operation(Operation::Type::substraction, operationNr_);

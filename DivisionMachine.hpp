@@ -7,7 +7,6 @@ class DivisionMachine :
 {
 public:
 	DivisionMachine();
-	bool isBusy() override;
 	void calculate() override;
 };
 

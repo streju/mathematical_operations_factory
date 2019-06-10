@@ -1,9 +1,10 @@
 #ifndef OPERATION_HPP
 #define OPERATION_HPP
 
+#include <atomic>
+#include <condition_variable>
 #include <iostream>
 #include <mutex>
-#include <condition_variable>
 
 struct Operation
 {
@@ -38,7 +39,7 @@ struct Operation
         std::lock_guard<std::mutex> lock(oper.mutex_);
         type_ = oper.type_;
         nrOfNeededWorkers_ = oper.nrOfNeededWorkers_;
-        nrOfAssignedWorkers_ = oper.nrOfAssignedWorkers_;
+        nrOfAssignedWorkers_ = oper.nrOfAssignedWorkers_.load();
         operNr_ = oper.operNr_;
 		isReady_ = oper.isReady_;
     }
@@ -61,13 +62,11 @@ struct Operation
 
     void assignWorker()
     {
-        std::lock_guard<std::mutex> lock(mutex_);
         nrOfAssignedWorkers_++;
     }
 
     bool isEnoughWorkers()
     {
-        std::lock_guard<std::mutex> lock(mutex_);
         return nrOfNeededWorkers_ == nrOfAssignedWorkers_;
     }
 
@@ -98,7 +97,7 @@ private:
     Type type_;
     int nrOfNeededWorkers_;
     int operNr_;
-    int nrOfAssignedWorkers_;
+    std::atomic<int> nrOfAssignedWorkers_;
 	bool isReady_;
     mutable std::mutex mutex_;
 	std::condition_variable cv_;

@@ -7,7 +7,6 @@ class AdditionMachine :
 {
 public:
 	AdditionMachine();
-	bool isBusy() override;
 	void calculate() override;
 };
 

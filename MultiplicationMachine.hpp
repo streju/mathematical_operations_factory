@@ -7,7 +7,6 @@ class MultiplicationMachine :
 {
 public:
 	MultiplicationMachine();
-	bool isBusy() override;
 	void calculate() override;
 };
 

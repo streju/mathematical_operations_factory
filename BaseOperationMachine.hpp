@@ -4,9 +4,12 @@
 class IBaseOperationMachine
 {
 public:
-	virtual ~IBaseOperationMachine() {};
+    virtual ~IBaseOperationMachine() {}
 
-    virtual bool isBusy() = 0;
+    bool isBusy()
+    {
+        return isCalculationOngoing_;
+    }
     virtual void calculate() = 0;
 
 	bool isCalculationOngoing_{ false };

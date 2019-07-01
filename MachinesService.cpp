@@ -4,12 +4,13 @@
 #include "SubstractionMachine.hpp"
 #include "MultiplicationMachine.hpp"
 #include "DivisionMachine.hpp"
+#include "src/Tools/Logger.hpp"
 
 MachinesService::MachinesService() : prefix_("MachinesService: ")
 {
     unsigned int totalNr = 0;
     unsigned int nrOfTypeMachines = rand() % 2 + 1;
-    std::cout << prefix_ << "going to create " << nrOfTypeMachines << " addition machines" << std::endl;
+    Logger() << prefix_ << "going to create " << nrOfTypeMachines << " addition machines" << std::endl;
 
     for (int i = 1; i <= nrOfTypeMachines; ++i)
 	{
@@ -19,7 +20,7 @@ MachinesService::MachinesService() : prefix_("MachinesService: ")
 	}
     totalNr += nrOfTypeMachines;
     nrOfTypeMachines = rand() % 2 + 1;
-    std::cout << prefix_ << "going to create " << nrOfTypeMachines << " substraction machines" << std::endl;
+    Logger() << prefix_ << "going to create " << nrOfTypeMachines << " substraction machines" << std::endl;
     for (unsigned int i = 1; i <= nrOfTypeMachines; ++i)
 	{
         machines_[Operation::Type::substraction].emplace_back(
@@ -29,7 +30,7 @@ MachinesService::MachinesService() : prefix_("MachinesService: ")
 
     totalNr += nrOfTypeMachines;
     nrOfTypeMachines = rand() % 2 + 1;
-    std::cout << prefix_ << "going to create " << nrOfTypeMachines << " multiplication machines" << std::endl;
+    Logger() << prefix_ << "going to create " << nrOfTypeMachines << " multiplication machines" << std::endl;
     for (int i = 1; i <= nrOfTypeMachines; ++i)
 	{
         machines_[Operation::Type::multiplication].emplace_back(
@@ -39,7 +40,7 @@ MachinesService::MachinesService() : prefix_("MachinesService: ")
 
     totalNr += nrOfTypeMachines;
     nrOfTypeMachines = rand() % 2 + 1;
-    std::cout << prefix_ << "going to create " << nrOfTypeMachines << " division machines" << std::endl;
+    Logger() << prefix_ << "going to create " << nrOfTypeMachines << " division machines" << std::endl;
     for (int i = 1; i <= nrOfTypeMachines; ++i)
 	{
         machines_[Operation::Type::division].emplace_back(
@@ -61,14 +62,13 @@ MachinesService::~MachinesService()
 
 void MachinesService::act(std::shared_ptr<Operation> operation)
 {
-    std::cout << prefix_ << " act" << std::endl;
+    Logger() << prefix_ << " act" << std::endl;
 
     for (const auto& machine : machines_.at(operation->getOperationType()))
     {
         if (machine->machine_->isBusy())
         {
-            std::cout << prefix_ << " machine nr " << machine->getNumber() << " is already in use" << std::endl;
+            Logger() << prefix_ << " machine nr " << machine->getNumber() << " is already in use" << std::endl;
         }
     }
-
 }

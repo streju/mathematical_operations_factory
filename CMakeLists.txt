@@ -1,17 +1,12 @@
 cmake_minimum_required(VERSION 2.8)
 
 project(mathematical_operations_factory)
-add_executable(${PROJECT_NAME} "main.cpp"
-    "Manager.cpp"
-    "Worker.cpp"
-    "MachinesService.cpp"
-    "AdditionMachine.cpp"
-    "SubstractionMachine.cpp"
-    "MultiplicationMachine.cpp"
-    "DivisionMachine.cpp"
-    "Machines.hpp"   #not used
-    "src/WorkersPool.hpp"
-    "src/ThreadWrapper.hpp"
-    "src/Tools/Logger.cpp")
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
-set_property(TARGET mathematical_operations_factory PROPERTY CXX_STANDARD 17)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -fdiagnostics-color=auto -Wno-deprecated -Wall -Werror -ggdb -Wextra -Wno-unused-parameter -pthread -fPIC")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-deprecated -Wall -Werror -ggdb -Wextra -Wno-unused-parameter -fPIC")
+
+include_directories(
+    ${PROJECT_SOURCE_DIR}/src
+)
+
+add_subdirectory(src)
+add_subdirectory(tests)

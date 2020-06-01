@@ -1,16 +1,14 @@
 #include "Manager.hpp"
-#include <iostream>
-#include <stdlib.h>
-#include <time.h>
+
 #include <chrono>
 #include <thread>
-#include <optional>
+
 #include "Tools/Logger.hpp"
 #include "Tools/Randoms.hpp"
 
-Manager::Manager(const std::shared_ptr<tools::IProgramStopControllerHelper>& stopController,
-    std::unique_ptr<tools::WorkersPool>&& workersPool, const std::shared_ptr<IMachinesService>& machinesService,
-    const std::shared_ptr<IWarehouseEntryPoint>& warehouse, const std::shared_ptr<IWorker>& worker, unsigned minTimeOfSleep, unsigned maxTimeOfSleep)
+Manager::Manager(const tools::ProgramStopControllerPtr& stopController,
+    std::unique_ptr<WorkersPool>&& workersPool, const MachinesServicePtr& machinesService,
+    const WarehouseEntryPointPtr& warehouse, const WorkerPtr& worker, unsigned minTimeOfSleep, unsigned maxTimeOfSleep)
     : stopController_(stopController)
     , workersPool_(std::move(workersPool))
     , machinesService_(machinesService)
@@ -67,24 +65,25 @@ void Manager::startOperation()
 
 OperationPtr Manager::createOperation() const
 {
-    Logger() << prefix_ << " creats operation nr " << operationNr_;
+
+    const std::string entry = prefix_ + " creats operation nr " + std::to_string(operationNr_);
     const auto& operType = tools::select_randomly_from_container(possibleOperTypes_.begin(), possibleOperTypes_.end());
     switch (*operType)
     {
         case Operation::Type::addition:
-            Logger() << ": addition" <<std::endl;
+            Logger(entry) << ": addition" <<std::endl;
             return std::make_shared<Operation>(Operation::Type::addition, operationNr_);
         case Operation::Type::substraction:
-            Logger() << ": substraction" <<std::endl;
+            Logger(entry) << ": substraction" <<std::endl;
             return std::make_shared<Operation>(Operation::Type::substraction, operationNr_);
         case Operation::Type::multiplication:
-            Logger() << ": multiplication" <<std::endl;
+            Logger(entry) << ": multiplication" <<std::endl;
             return std::make_shared<Operation>(Operation::Type::multiplication, operationNr_);
         case Operation::Type::division:
-            Logger() << ": division" <<std::endl;
+            Logger(entry) << ": division" <<std::endl;
             return std::make_shared<Operation>(Operation::Type::division, operationNr_);
         default:
-            Logger() << "unsupported operation!" <<std::endl;
+            Logger(entry) << "unsupported operation!" <<std::endl;
             return nullptr;
     }
 }

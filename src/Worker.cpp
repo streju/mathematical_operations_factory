@@ -1,14 +1,13 @@
 #include "Worker.hpp"
 
 #include <iostream>
-#include <functional>
-#include "Tools/Logger.hpp"
+
 #include "Tools/Randoms.hpp"
 #include "Tools/Timer.hpp"
 
 Worker::Worker(const MachinesServicePtr& machinesService,
-    const std::shared_ptr<IWarehouseEntryPoint>& warehouse,
-    const std::shared_ptr<tools::IProgramStopControllerHelper>& stopController)
+    const WarehouseEntryPointPtr& warehouse,
+    const tools::ProgramStopControllerPtr& stopController)
     : machinesService_(machinesService)
     , warehouse_(warehouse)
     , stopController_(stopController)
@@ -29,10 +28,11 @@ void Worker::startProcessingOperation(const unsigned threadNr, const OperationPt
     }
     if (!futureResult.valid())
     {
+        Logger(prefix) << "ERROR during calculation of operation: " << *operation << std::endl;
         return;
     }
     auto result = futureResult.get();
-    Logger(prefix) << "End of machine operation" << std::endl;
+    Logger(prefix) << "End of calculation in the machine, operation: " << *operation << std::endl;
     putOperationResultToMagazine(prefix, operation, result);
 }
 
@@ -52,8 +52,10 @@ void Worker::movePendingsOperationsToWarehouse(unsigned threadNr)
 
 void Worker::transportToMachine(const std::string& prefix, const OperationPtr& operation) const
 {
+    tools::SecondsTimer timer;
     std::this_thread::sleep_for(std::chrono::seconds(tools::random(2, 6)));
-    Logger(prefix) << "Transport to machine, operation: " << *operation << " end" << std::endl;
+    Logger(prefix) << "Transport to machine, operation: " << *operation << " end. Time: "
+        << timer.stopAndGetTime() << "s." << std::endl;
 }
 
 void Worker::putOperationResultToMagazine(const std::string& prefix, const OperationPtr& operation,

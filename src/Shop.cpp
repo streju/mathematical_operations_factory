@@ -1,7 +1,8 @@
 #include "Shop.hpp"
 
 #include <algorithm>
-#include "HelpersFunctions.hpp"
+
+#include "Utils.hpp"
 
 Shop::Shop()
 {
@@ -45,7 +46,7 @@ ProductPtr Shop::buy(const CustomerRequest& req)
     if (product)
     {
         Logger(prefix_) << "Selling product: Type " << productTypeToString(product->type)
-            << ", value " << product->value << "to customer nr " << req.customerNr << std::endl;
+            << ", value " << product->value << " to customer nr " << req.customerNr << std::endl;
     }
     return product;
 }

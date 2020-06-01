@@ -33,6 +33,4 @@ public:
     void stop() override {ProgramStopController::getInstance().stop();}
 };
 
-
-
 } //namespace tools

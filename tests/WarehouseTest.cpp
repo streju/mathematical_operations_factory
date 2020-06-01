@@ -46,6 +46,9 @@ TEST_F(WarehouseShould, handleArrivalAndLoadTransporter)
     sut_ = std::make_unique<Warehouse>(maxDepotSize, programStopControllerHelperMock_);
     ProductPtr product;
 
+    const auto multpilicationResult = std::make_shared<OperationResult>(4, 8965.143, Operation::Type::multiplication);
+    sut_->put(multpilicationResult);
+
     auto funcToStartLoadingTransport = [this](){
         auto t = std::thread([this]()
             {
@@ -59,18 +62,12 @@ TEST_F(WarehouseShould, handleArrivalAndLoadTransporter)
         t.detach();
     };
 
-    auto funcToNotifyAboutTransporter = [this, &product](){
-        auto t = std::thread([this, &product]()
-            {
-                unsigned transporterNr{2};
-                EXPECT_CALL(*programStopControllerHelperMock_, wasStopRequested()).WillRepeatedly(Return(false));
-                product = sut_->handleTransporterArrival(transporterNr);
-            });
-        t.join();
-    };
-
-    funcToStartLoadingTransport();
-    funcToNotifyAboutTransporter();
+    unsigned transporterNr{2};
+    EXPECT_CALL(*programStopControllerHelperMock_, wasStopRequested())
+        .WillOnce(DoAll(
+            InvokeWithoutArgs(funcToStartLoadingTransport), Return(false)))
+        .WillRepeatedly(Return(false));
+    product = sut_->handleTransporterArrival(transporterNr);
 }
 
 } // namespace tests

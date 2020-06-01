@@ -1,8 +1,10 @@
 #include "MachinesService.hpp"
 
+#include <functional>
+
 #include "Tools/Logger.hpp"
 
-MachinesService::MachinesService(const std::shared_ptr<tools::IProgramStopControllerHelper>& stopController, unsigned nrOfMachines)
+MachinesService::MachinesService(const tools::ProgramStopControllerPtr& stopController, unsigned nrOfMachines)
     : machinesPool_(stopController, nrOfMachines), stopController_(stopController), prefix_("MachinesService: ")
 {
     Logger(prefix_) << nrOfMachines << " machines to use." << std::endl;
@@ -14,7 +16,7 @@ MachinesService::registerOperation(OperationPtr operation)
     operation->assignWorker();
     if (!operation->isEnoughWorkers())
     {
-        Logger(prefix_) << "Worker will wait to another" << std::endl;
+        Logger(prefix_) << "Worker will wait to other" << std::endl;
         std::unique_lock<std::mutex> lk(mu_);
         cv_.wait(lk, [operation, this](){
             return operation->isEnoughWorkers() || stopController_->wasStopRequested();

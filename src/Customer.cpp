@@ -2,10 +2,10 @@
 
 #include "Customer.hpp"
 #include "Tools/Randoms.hpp"
-#include "HelpersFunctions.hpp"
+#include "Utils.hpp"
 
 Customer::Customer(
-    const std::shared_ptr<tools::IProgramStopControllerHelper>& stopController, const std::shared_ptr<IShop>& shop)
+    const tools::ProgramStopControllerPtr& stopController, const ShopPtr& shop)
     : stopController_(stopController), shop_(shop)
 {
 }

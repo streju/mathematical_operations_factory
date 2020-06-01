@@ -28,7 +28,7 @@ public:
     unsigned maxTimeBetweenOperations_{10};
     unsigned minTimeBetweenOperations_{2};
     unsigned nrOfWorkers_{2};
-    Manager sut_{programStopControllerHelperMock_, std::make_unique<tools::WorkersPool>(programStopControllerHelperMockForWorkersPool_, nrOfWorkers_),
+    Manager sut_{programStopControllerHelperMock_, std::make_unique<WorkersPool>(programStopControllerHelperMockForWorkersPool_, nrOfWorkers_),
         machinesServiceMock_, warehouseMock_, workerMock_, minTimeBetweenOperations_, maxTimeBetweenOperations_};
 };
 
@@ -89,7 +89,8 @@ TEST_F(ManagerShould, loadTransportAndStartOperationIfBothActionsArePossible)
 
     EXPECT_CALL(*warehouseMock_, getState()).WillOnce(
         Return(WarehouseRaport(false, true, false)));
-    EXPECT_CALL(*workerMock_, loadTransport(_)).WillOnce(InvokeWithoutArgs([&nrOfEndedActions]{nrOfEndedActions--;}));
+    EXPECT_CALL(*workerMock_, loadTransport(_)).WillOnce(InvokeWithoutArgs([&nrOfEndedActions]{
+        nrOfEndedActions--;}));
     EXPECT_CALL(*workerMock_, startProcessingOperation(_, _)).Times(AtLeast(1))
          .WillOnce(DoAll(
              SaveArg<1>(&oper),
@@ -99,9 +100,9 @@ TEST_F(ManagerShould, loadTransportAndStartOperationIfBothActionsArePossible)
                  {
                      nrOfEndedActions++;
                  }
-                nrOfEndedActions++;
+                nrOfEndedActions--;
          })))
-        .WillOnce(InvokeWithoutArgs([&nrOfEndedActions]{nrOfEndedActions++;}));
+        .WillOnce(InvokeWithoutArgs([&nrOfEndedActions]{nrOfEndedActions--;}));
     sut_.start();
 }
 

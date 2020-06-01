@@ -1,10 +1,8 @@
-#ifndef OPERATION_HPP
-#define OPERATION_HPP
+#pragma once
 
 #include <atomic>
-#include <condition_variable>
 #include <iostream>
-#include <mutex>
+#include <memory>
 
 #include "Tools/Logger.hpp"
 #include "Tools/Randoms.hpp"
@@ -22,8 +20,17 @@ struct Operation
 
     Operation(Type type, unsigned operNr) : type_(type), operNr_(operNr), nrOfAssignedWorkers_(0)
     {
-        firstNumberToCalculate_ = tools::random(0, 100);
-        secondNumberToCalculate_ = tools::random(0, 100);;
+        if (type_ == Type::division)
+        {
+            firstNumberToCalculate_ = tools::random(1, 100);
+            secondNumberToCalculate_ = tools::random(1, 100);
+        }
+        else
+        {
+            firstNumberToCalculate_ = tools::random(0, 100);
+            secondNumberToCalculate_ = tools::random(0, 100);
+        }
+
         switch (type_)
         {
             case Type::addition:
@@ -71,5 +78,3 @@ private:
 };
 
 using OperationPtr = std::shared_ptr<Operation>;
-
-#endif // OPERATION_HPP

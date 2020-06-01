@@ -12,3 +12,5 @@ public:
     virtual void movePendingsOperationsToWarehouse(unsigned) = 0;
     virtual ~IWorker() = default;
 };
+
+using WorkerPtr = std::shared_ptr<IWorker>;

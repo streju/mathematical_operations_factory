@@ -47,6 +47,7 @@ TEST_P(WorkerWithParamShould, processAndLoadOperation)
         t.detach();
     };
 
+    EXPECT_CALL(*programStopControllerHelperMock_, wasStopRequested()).WillOnce(Return(false));
     EXPECT_CALL(*machinesServiceMock_, registerOperation(_)).WillOnce(DoAll(
         InvokeWithoutArgs(funcToExecutePromise),
         Return(sh_fut)));
@@ -68,6 +69,12 @@ TEST_F(WorkerShould, loadOperationToTransporter)
 {
     EXPECT_CALL(*warehouseMock_, startLoadTransport(std::string("Worker nr" + std::to_string(threadNr_) + ": ")));
     sut_.loadTransport(threadNr_);
+}
+
+TEST_F(WorkerShould, movePendings)
+{
+    EXPECT_CALL(*warehouseMock_, movePendings());
+    sut_.movePendingsOperationsToWarehouse(threadNr_);
 }
 
 } // namespace tests

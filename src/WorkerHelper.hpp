@@ -1,17 +1,9 @@
 #pragma once
 
-#include <memory>
-#include <string>
 #include <utility>
 #include <optional>
 
-#include "IWorker.hpp"
 #include "Operation.hpp"
-#include "OperationResult.hpp"
-#include "IMachinesService.hpp"
-#include "IWarehouse.hpp"
-#include "Tools/ThreadsPool.hpp"
-#include "Tools/IProgramStopControllerHelper.hpp"
 
 struct WorkerHelper
 {
@@ -31,25 +23,6 @@ struct WorkerHelper
         nrOfAssignedWorkers = wh.nrOfAssignedWorkers.load();
     }
     WorkerHelper& operator=(const WorkerHelper& wh)
-    {
-        callback_ = wh.callback_;
-        type = wh.type;
-        operType = wh.operType;
-        nrOfNeededWorkers = wh.nrOfNeededWorkers.load();
-        nrOfAssignedWorkers = wh.nrOfAssignedWorkers.load();
-        return *this;
-    }
-
-    WorkerHelper(WorkerHelper&& wh)
-    {
-        callback_ = wh.callback_;
-        type = wh.type;
-        operType = wh.operType;
-        nrOfNeededWorkers = wh.nrOfNeededWorkers.load();
-        nrOfAssignedWorkers = wh.nrOfAssignedWorkers.load();
-    }
-
-    WorkerHelper& operator=(WorkerHelper&& wh)
     {
         callback_ = wh.callback_;
         type = wh.type;

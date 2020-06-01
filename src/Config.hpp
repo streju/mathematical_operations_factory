@@ -4,6 +4,7 @@
 #include <string>
 
 #include "Tools/Logger.hpp"
+#include "Tools/Randoms.hpp"
 
 struct Config
 {

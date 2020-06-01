@@ -1,36 +1,33 @@
-#ifndef MANAGER_HPP
-#define MANAGER_HPP
+#pragma once
 
 #include <array>
-#include <optional>
 #include <string>
 
 #include "Operation.hpp"
-#include "MachinesService.hpp"
+#include "IMachinesService.hpp"
 #include "IWarehouseEntryPoint.hpp"
-#include "Tools/WorkersPool.hpp"
+#include "IWorker.hpp"
 #include "Tools/IProgramStopControllerHelper.hpp"
+#include "WorkersPool.hpp"
 
-#include "Worker.hpp"
 
 class Manager
 {
 public:
-    Manager(const std::shared_ptr<tools::IProgramStopControllerHelper>& stopController,
-        std::unique_ptr<tools::WorkersPool>&& workersPool, const std::shared_ptr<IMachinesService>& machinesService,
-        const std::shared_ptr<IWarehouseEntryPoint>& warehouse, const std::shared_ptr<IWorker>& worker, unsigned minTimeOfSleep, unsigned maxTimeOfSleep);
+    Manager(const tools::ProgramStopControllerPtr& stopController,
+        std::unique_ptr<WorkersPool>&& workersPool, const MachinesServicePtr& machinesService,
+        const WarehouseEntryPointPtr& warehouse, const WorkerPtr& worker, unsigned minTimeOfSleep, unsigned maxTimeOfSleep);
     void start();
-    ~Manager(){Logger(prefix_) << "DTOR" << std::endl;}
 
 private:
     void startOperation();
     OperationPtr createOperation() const;
 
-    const std::shared_ptr<tools::IProgramStopControllerHelper> stopController_;
-    const std::unique_ptr<tools::WorkersPool> workersPool_;
-    const std::shared_ptr<IMachinesService> machinesService_;
-    const std::shared_ptr<IWarehouseEntryPoint> warehouse_;
-    const std::shared_ptr<IWorker> worker_;
+    const tools::ProgramStopControllerPtr stopController_;
+    const std::unique_ptr<WorkersPool> workersPool_;
+    const MachinesServicePtr machinesService_;
+    const WarehouseEntryPointPtr warehouse_;
+    const WorkerPtr worker_;
     const unsigned maxTimeOfSleep_;
     const unsigned minTimeOfSleep_;
     int operationNr_;
@@ -40,5 +37,3 @@ private:
     const std::array<Operation::Type, 4> possibleOperTypes_{
         Operation::Type::addition, Operation::Type::substraction, Operation::Type::multiplication, Operation::Type::division};
 };
-
-#endif // MANAGER_HPP

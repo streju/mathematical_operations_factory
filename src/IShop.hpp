@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 #include "Product.hpp"
 #include "CustomerRequest.hpp"
 
@@ -11,3 +13,5 @@ public:
     virtual void deliver(const ProductPtr&) = 0;
     virtual ~IShop() = default;
 };
+
+using ShopPtr = std::shared_ptr<IShop>;

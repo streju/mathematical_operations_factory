@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 namespace tools
 {
 
@@ -10,5 +12,7 @@ public:
     virtual void stop() = 0;
     virtual ~IProgramStopControllerHelper() = default;
 };
+
+using ProgramStopControllerPtr = std::shared_ptr<tools::IProgramStopControllerHelper>;
 
 } //namespace tools

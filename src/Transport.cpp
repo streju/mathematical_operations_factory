@@ -1,38 +1,44 @@
 #include "Transport.hpp"
 
-#include "Tools/Randoms.hpp"
+#include <thread>
 
-Transport::Transport(const std::shared_ptr<tools::IProgramStopControllerHelper>& stopController,
-    const std::shared_ptr<IWarehouseEntryPoint>& warehouse,
-    const std::shared_ptr<IShop>& shop)
+#include "Tools/Randoms.hpp"
+#include "Tools/Timer.hpp"
+
+Transport::Transport(const tools::ProgramStopControllerPtr& stopController,
+    const WarehouseEntryPointPtr& warehouse,
+    const ShopPtr& shop)
     : stopController_(stopController), warehouse_(warehouse) , shop_(shop)
 {
 }
 
-Transport::~Transport()
-{
-    Logger("Transport") << "DTOR" << std::endl;
-}
-
 void Transport::start(unsigned transporterNr)
 {
+    std::string prefix{"Transporter nr" + std::to_string(transporterNr) + ": "};
+
     while (!stopController_->wasStopRequested())
     {
-        std::this_thread::sleep_for(std::chrono::seconds(tools::random(5, 10)));
-        Logger() << "Transporter nr " << transporterNr << " will arive to warehouse" << std::endl;
+        simulateWayBetweenWarehouseAndShop(prefix);
+
+        Logger(prefix) << "Will arive to warehouse" << std::endl;
         auto product = warehouse_->notifyAboutNewTransporter(transporterNr);
         if (!product)
         {
-            Logger() << "Critical error! Transport loading shoul never fail.";
-//            std::abort();
+            if (stopController_->wasStopRequested()) return;
+
+            Logger(prefix) << "Critical error! Transport loading failed.";
+            std::abort();
             continue;
         }
-        simulateWayBetweenWarehouseAndShop();
+
+        simulateWayBetweenWarehouseAndShop(prefix);
         shop_->deliver(product);
     }
 }
 
-void Transport::simulateWayBetweenWarehouseAndShop()
+void Transport::simulateWayBetweenWarehouseAndShop(const std::string& prefix)
 {
+    tools::SecondsTimer timer;
     std::this_thread::sleep_for(std::chrono::seconds(tools::random(5, 10)));
+    Logger(prefix) << "Traveled the road between warehouse and shop in " << timer.stopAndGetTime() << "s." << std::endl;
 }

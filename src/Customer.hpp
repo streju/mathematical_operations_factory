@@ -14,18 +14,16 @@
 class Customer
 {
 public:
-    Customer(const std::shared_ptr<tools::IProgramStopControllerHelper>& stopController,
-        const std::shared_ptr<IShop>& shop);
+    Customer(const tools::ProgramStopControllerPtr& stopController, const ShopPtr& shop);
 
     void start(unsigned threadNr);
-    ~Customer(){Logger("Customer") << "DTOR" << std::endl;}
 private:
 
     std::optional<CustomerRequest> prepareRequest(const std::string& prefix, unsigned threadNr) const;
     std::string printRequest(CustomerRequest req) const;
 
-    const std::shared_ptr<tools::IProgramStopControllerHelper> stopController_;
-    const std::shared_ptr<IShop> shop_;
+    const tools::ProgramStopControllerPtr stopController_;
+    const ShopPtr shop_;
     const std::array<CustomerRequest::Type, 4> reqTypes_{
         CustomerRequest::Type::value, CustomerRequest::Type::valueAndProductType, CustomerRequest::Type::productType, CustomerRequest::Type::any};
     const std::array<Product::Type, 4> possibleProductTypes_{

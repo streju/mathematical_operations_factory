@@ -8,9 +8,7 @@ add_library(${PROJECT_NAME}-src OBJECT
     "Transport.cpp"
     "Shop.cpp"
     "Customer.cpp"
-    "HelpersFunctions.cpp")
+    "Utils.cpp")
 
 add_executable(${PROJECT_NAME} "main.cpp"
    $<TARGET_OBJECTS:${PROJECT_NAME}-src>)
-
-# add subdirectory tools??

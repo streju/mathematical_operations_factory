@@ -23,4 +23,7 @@ public:
     virtual void startLoadTransport(const std::string& prefix) = 0;
     virtual WarehouseRaport getState() = 0;
     virtual void movePendings() = 0;
+    virtual ~IWarehouseEntryPoint() = default;
 };
+
+using WarehouseEntryPointPtr = std::shared_ptr<IWarehouseEntryPoint>;

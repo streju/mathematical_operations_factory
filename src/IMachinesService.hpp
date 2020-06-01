@@ -1,5 +1,4 @@
-#ifndef IMACHINESSERVICE_HPP
-#define IMACHINESSERVICE_HPP
+#pragma once
 
 #include <future>
 
@@ -14,5 +13,3 @@ public:
 };
 
 using MachinesServicePtr = std::shared_ptr<IMachinesService>;
-
-#endif // IMACHINESSERVICE_HPP

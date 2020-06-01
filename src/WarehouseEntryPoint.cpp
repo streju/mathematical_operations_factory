@@ -18,7 +18,7 @@ void WarehouseEntryPoint::placeOperResult(const OperationResultPtr& operationRes
 
     if (operationToState_.find(operationNr) == operationToState_.end())
     {
-        Logger() << "Error durign put OperationResult to depot." << std::endl;
+        Logger() << "Error durign putting OperationResult to depot." << std::endl;
         std::abort();
         return;
     }

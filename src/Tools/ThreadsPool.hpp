@@ -1,8 +1,8 @@
 #pragma once
 
 #include <atomic>
-#include <thread>
 #include <future>
+#include <thread>
 #include <type_traits>
 
 #include "ThreadSafeQueue.hpp"
@@ -18,7 +18,7 @@ private:
     struct impl_base
     {
         virtual void call(int nr) = 0;
-        virtual ~impl_base(){}
+        virtual ~impl_base() = default;
     };
     template <typename FuncType>
     struct impl : public impl_base
@@ -59,7 +59,7 @@ private:
 class ThreadPool
 {
 public:
-    ThreadPool(const std::shared_ptr<tools::IProgramStopControllerHelper>& stopController, int nrOfThreads)
+    ThreadPool(const tools::ProgramStopControllerPtr& stopController, int nrOfThreads)
         : stopController_{stopController}
     {
         for (int threadNr = 1; threadNr <= nrOfThreads; ++threadNr)
@@ -68,25 +68,6 @@ public:
                 std::thread(&ThreadPool::work, this, threadNr), true));
         }
     }
-
-    virtual ~ThreadPool()
-    {
-        Logger("ThreadsPool") << "DTOR" << std::endl;
-    }
-
-//    template <typename FuncType, typename ...Args>
-//    void pushToQueue(FuncType&& f, Args&&... args)
-//    {
-//        std::function<decltype(f(args...))()> func = std::bind(std::forward<FuncType>(f), std::forward<Args>(args)...);
-//        std::function<void(int)> functionWrapper = [func](int threadNr){func(threadNr);};
-//        queue_.push(functionWrapper);
-//    }
-
-//    template <typename FuncType>
-//    void pushToQueue(FuncType f)
-//    {
-//        queue_.push(std::move(f));
-//    }
 
     template <typename FuncType>
     std::future<typename std::result_of<FuncType(int)>::type> pushToQueue(FuncType f)
@@ -113,9 +94,8 @@ protected:
                 std::this_thread::yield();
             }
         }
-        Logger("ThreadsPool") << "STOP REQUESTED" << std::endl;
     }
-    const std::shared_ptr<tools::IProgramStopControllerHelper> stopController_;
+    const tools::ProgramStopControllerPtr stopController_;
     std::vector<std::unique_ptr<ThreadWrapper>> threads_;
     ThreadSafeQueue<FunctionWrapper> queue_;
 };

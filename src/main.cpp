@@ -1,25 +1,25 @@
+#include <future>
 #include <iostream>
-
-#include <thread>
 #include <map>
 #include <memory>
-#include <future>
+#include <thread>
 #include <vector>
 
-#include "Manager.hpp"
-#include "Worker.hpp"
-#include "Operation.hpp"
-#include "WarehouseEntryPoint.hpp"
-#include "MachinesService.hpp"
-#include "Transport.hpp"
-#include "Shop.hpp"
-#include "Customer.hpp"
 #include "Config.hpp"
-
-#include "Tools/WorkersPool.hpp"
-#include "Tools/ThreadsPool.hpp"
+#include "Customer.hpp"
+#include "MachinesService.hpp"
+#include "Manager.hpp"
+#include "Operation.hpp"
+#include "Shop.hpp"
 #include "Tools/ProgramStopController.hpp"
 #include "Tools/Randoms.hpp"
+#include "Tools/ThreadsPool.hpp"
+#include "Tools/ThreadWrapper.hpp"
+#include "Transport.hpp"
+#include "Warehouse.hpp"
+#include "WarehouseEntryPoint.hpp"
+#include "Worker.hpp"
+#include "WorkersPool.hpp"
 
 using namespace std;
 
@@ -57,36 +57,35 @@ void start()
     const auto worker = make_shared<Worker>(machinesService, warehouseEntry, stopController);
     Manager manager{
         stopController,
-        make_unique<tools::WorkersPool>(stopController, config.nrOfWorkers),
+        make_unique<WorkersPool>(stopController, config.nrOfWorkers),
         machinesService,
         warehouseEntry,
         worker,
         config.minTimeBetweenOperations,
         config.maxTimeBetweenOperations};
-    ThreadWrapper manager_thread{thread(&Manager::start, &manager), true};
+    tools::ThreadWrapper manager_thread{thread(&Manager::start, &manager), true};
 
     const auto shop = make_shared<Shop>();
-    vector<unique_ptr<ThreadWrapper>> transporters(config.nrOfTransporters);
+    vector<unique_ptr<tools::ThreadWrapper>> transporters(config.nrOfTransporters);
     const auto transport = make_shared<Transport>(stopController, warehouseEntry, shop);
     for (unsigned i = 1; i <= config.nrOfTransporters; i++)
     {
-        transporters.emplace_back(make_unique<ThreadWrapper>(
+        transporters.emplace_back(make_unique<tools::ThreadWrapper>(
             thread(&Transport::start, transport, i), true));
     }
 
-    vector<unique_ptr<ThreadWrapper>> customers(config.nrOfCustomers);
+    vector<unique_ptr<tools::ThreadWrapper>> customers(config.nrOfCustomers);
     const auto customer = make_shared<Customer>(stopController, shop);
     for (unsigned customerNr = 1; customerNr <= config.nrOfCustomers; customerNr++)
     {
-        customers.emplace_back(make_unique<ThreadWrapper>(
+        customers.emplace_back(make_unique<tools::ThreadWrapper>(
             thread(&Customer::start, customer, customerNr), true));
     }
-    const auto a = async([stopController]
+    const auto stopAction = async([stopController]
         {
-        //TODO testy toolsów
             if (evaluateInput() == Input::stop)
             {
-                Logger() << "Beginning of stop program procedure." << endl;
+                Logger() << "Begin of stop program procedure." << endl;
                 stopController->stop();
             }
         });

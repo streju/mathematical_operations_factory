@@ -8,14 +8,6 @@
 class IWarehouse
 {
 public:
-    enum class State
-    {
-        DeliveryPossibleTransporterWaits,
-        DeliveryPossibleLackOfTransporters,
-        FullAndLackOfTransporters,
-        FullAndTransportWaits
-    };
-
     virtual void put(const OperationResultPtr& operationResult) = 0;
     virtual ProductPtr handleTransporterArrival(unsigned transporterNr) = 0;
     virtual void startLoadTransport(const std::string& prefix) = 0;

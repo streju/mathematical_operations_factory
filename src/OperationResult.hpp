@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+
 #include "Operation.hpp"
 
 struct OperationResult

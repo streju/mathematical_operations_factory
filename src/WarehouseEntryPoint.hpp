@@ -3,13 +3,11 @@
 #include <map>
 #include <memory>
 #include <mutex>
-#include <vector>
-#include <condition_variable>
 
-#include "Operation.hpp"
+#include "IWarehouse.hpp"
 #include "IWarehouseEntryPoint.hpp"
+#include "Operation.hpp"
 #include "Tools/ThreadSafeQueue.hpp"
-#include "Warehouse.hpp"
 
 class WarehouseEntryPoint : public IWarehouseEntryPoint
 {
@@ -36,7 +34,7 @@ private:
     void startPlacing(const OperationResultPtr& operationResult);
 
     std::shared_ptr<IWarehouse> warehouse_;
-    ThreadSafeQueue<OperationResultPtr> pendings_;
+    tools::ThreadSafeQueue<OperationResultPtr> pendings_;
     std::map<unsigned, State> operationToState_;
     std::mutex mutex_;
 };

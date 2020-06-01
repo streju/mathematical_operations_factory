@@ -2,6 +2,9 @@
 
 #include <thread>
 #include "Logger.hpp"
+
+namespace tools {
+
 class ThreadWrapper
 {
 public:
@@ -14,7 +17,6 @@ public:
     }
     ~ThreadWrapper()
     {
-        Logger("ThreadWrapper") << "DTOR" << std::endl;
         if (thread_.joinable() && joinable_)
         {
             thread_.join();
@@ -32,3 +34,5 @@ private:
     std::thread thread_;
     bool joinable_;
 };
+
+} //namespace tools

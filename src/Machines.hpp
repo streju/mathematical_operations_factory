@@ -1,18 +1,18 @@
 #pragma once
 
 #include <memory>
+#include <thread>
+
 #include "Operation.hpp"
 #include "OperationResult.hpp"
-
 #include "Tools/Logger.hpp"
 #include "Tools/Randoms.hpp"
+#include "Tools/Timer.hpp"
 
 class Machine
 {
 public:
-    Machine()
-    {}
-    ~Machine() {Logger("Machine ") << "DTOR" << std::endl;}
+    Machine() = default;
 
     OperationResultPtr performCalculation(const OperationPtr& operation, unsigned nr)
     {
@@ -22,8 +22,13 @@ public:
         const auto& secondNr = operation->getSecond();
 
         printCalculation(operType, firstNr, secondNr, prefix);
+
+        tools::SecondsTimer timer;
         const auto value = calculate(operType, firstNr, secondNr, prefix);
-        Logger(prefix) << "Calculation result is " << value << std::endl;
+
+        Logger(prefix) << "Calculation result is " << value
+            << ". Calculation Time: " << timer.stopAndGetTime() << "s." << std::endl;
+
         return std::make_shared<OperationResult>(operation->getOperationNr(), value, operType);
     }
 
@@ -33,12 +38,16 @@ private:
         switch (operType)
         {
             case Operation::Type::addition:
+                std::this_thread::sleep_for(std::chrono::seconds(tools::random(2, 3)));
                 return first + second;
             case Operation::Type::substraction:
+                std::this_thread::sleep_for(std::chrono::seconds(tools::random(2, 4)));
                 return first - second;
             case Operation::Type::multiplication:
+                std::this_thread::sleep_for(std::chrono::seconds(tools::random(3, 5)));
                 return first * second;
             case Operation::Type::division:
+                std::this_thread::sleep_for(std::chrono::seconds(tools::random(4, 6)));
                 return first / second;
         }
         Logger(prefix) << "Unsupported operation!" << std::endl;

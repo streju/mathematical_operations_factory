@@ -1,23 +1,16 @@
-#ifndef THREADSAFEQUEUE_HPP
-#define THREADSAFEQUEUE_HPP
-
-#include <iostream>
+#pragma once
 
 #include <condition_variable>
-#include <queue>
-#include <memory>
 #include <mutex>
-#include <functional>
+#include <queue>
 
-#include "Logger.hpp"
+namespace tools {
 
 template<typename T>
 class ThreadSafeQueue
 {
 public:
-    ThreadSafeQueue()
-    {
-    }
+    ThreadSafeQueue() = default;
 
     void push(T data)
     {
@@ -41,7 +34,6 @@ public:
         {
             return false;
         }
-//        Logger() << "Elo nie ten try_pop" << std::endl;
         result = std::move(queue_.front());
         queue_.pop();
         return true;
@@ -64,4 +56,4 @@ protected:
     std::mutex mutex_;
 };
 
-#endif // THREADSAFEQUEUE_HPP
+} // namespace tools
